@@ -11,12 +11,9 @@ public partial class EngineLoader : Node3D
 {
 	public override void _Ready()
 	{
-		Assembly engineAssembly = null;
-
 		try
 		{
-			ElegyLauncherLoadContext launcherLoadContext = new();
-			engineAssembly = launcherLoadContext
+			mEngineAssembly = mLoadContext
 				.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/Elegy.Engine.dll" );
 		}
 		catch ( FileNotFoundException ex )
@@ -31,7 +28,7 @@ public partial class EngineLoader : Node3D
 			GD.PrintErr( $"Unknown error: {ex.Message}" );
 		}
 
-		if ( engineAssembly == null )
+		if ( mEngineAssembly == null )
 		{
 			Exit( "Shutting down, I cannot work without my engine DLL...", 1 );
 			return;
@@ -43,7 +40,7 @@ public partial class EngineLoader : Node3D
 		// I preferred to keep it simple and just use delegates
 		EngineInterface engine = new();
 		
-		Type? entry = engineAssembly.GetType( "Elegy.EntryPoint" );
+		Type? entry = mEngineAssembly.GetType( "Elegy.EntryPoint" );
 		if ( entry == null )
 		{
 			GD.PrintErr( "Elegy.Engine.dll does not contain EntryPoint" );
@@ -95,4 +92,13 @@ public partial class EngineLoader : Node3D
 		QueueFree();
 		GetTree().Quit( errorCode );
 	}
+
+	public override void _ExitTree()
+	{
+		mEngineAssembly = null;
+		mLoadContext = null;
+	}
+
+	ElegyLauncherLoadContext mLoadContext = new();
+	Assembly mEngineAssembly = null;
 }
