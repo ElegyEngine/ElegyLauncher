@@ -9,7 +9,7 @@ using System.Reflection;
 
 public partial class EngineLoader : Node3D
 {
-	public override void _Ready()
+	public override void _EnterTree()
 	{
 		try
 		{
@@ -67,8 +67,8 @@ public partial class EngineLoader : Node3D
 		EngineHost engineHost = new( engine );
 		engineHost.Name = "EngineHost";
 		engineHost.TopLevel = true;
-		GetParent().AddChild( engineHost );
-
+		CallDeferred( Node.MethodName.AddChild, engineHost );
+		
 		// Delete self, no longer needed
 		QueueFree();
 	}
