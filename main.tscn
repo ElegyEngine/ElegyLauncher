@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://di6saf63p08px"]
+
+[ext_resource type="Script" path="res://EngineLoader.cs" id="1_d82fq"]
+
+[node name="Root" type="Node3D"]
+
+[node name="EngineLoader" type="Node3D" parent="."]
+script = ExtResource("1_d82fq")
