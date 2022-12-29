@@ -7,7 +7,7 @@ namespace Elegy.Launcher
 {
 	public struct EngineInterface
 	{
-		public delegate bool EngineInitMethod();
+		public delegate bool EngineInitMethod( Node3D rootNode );
 		public delegate void EngineUpdateMethod( float delta );
 		public delegate void EngineInputMethod( InputEvent @event );
 

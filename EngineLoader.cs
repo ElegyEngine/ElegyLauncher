@@ -15,7 +15,9 @@ public partial class EngineLoader : Node3D
 
 		try
 		{
-			engineAssembly = Assembly.LoadFile( $"{Directory.GetCurrentDirectory()}/Elegy.Engine.dll" );
+			ElegyLauncherLoadContext launcherLoadContext = new();
+			engineAssembly = launcherLoadContext
+				.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/Elegy.Engine.dll" );
 		}
 		catch ( FileNotFoundException ex )
 		{
@@ -41,7 +43,7 @@ public partial class EngineLoader : Node3D
 		// I preferred to keep it simple and just use delegates
 		EngineInterface engine = new();
 		
-		Type? entry = engineAssembly.GetType( "EntryPoint" );
+		Type? entry = engineAssembly.GetType( "Elegy.EntryPoint" );
 		if ( entry == null )
 		{
 			GD.PrintErr( "Elegy.Engine.dll does not contain EntryPoint" );
@@ -58,7 +60,7 @@ public partial class EngineLoader : Node3D
 			return;
 		}
 
-		if ( !engine.Init() )
+		if ( !engine.Init( GetParent() as Node3D ) )
 		{
 			Exit( "Engine failed to initialise" );
 			return;
