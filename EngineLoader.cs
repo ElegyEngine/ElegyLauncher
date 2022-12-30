@@ -67,7 +67,7 @@ public partial class EngineLoader : Node3D
 		EngineHost engineHost = new( engine );
 		engineHost.Name = "EngineHost";
 		engineHost.TopLevel = true;
-		CallDeferred( Node.MethodName.AddChild, engineHost );
+		GetParent().CallDeferred( Node.MethodName.AddChild, engineHost );
 		
 		// Delete self, no longer needed
 		QueueFree();
