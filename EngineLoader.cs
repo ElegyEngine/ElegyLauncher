@@ -9,8 +9,13 @@ using System.Reflection;
 
 public partial class EngineLoader : Node3D
 {
-	public override void _EnterTree()
+	public override void _Process( double delta )
 	{
+		if ( mInitialised )
+		{
+			return;
+		}
+
 		try
 		{
 			mEngineAssembly = mLoadContext
@@ -67,10 +72,11 @@ public partial class EngineLoader : Node3D
 		EngineHost engineHost = new( engine );
 		engineHost.Name = "EngineHost";
 		engineHost.TopLevel = true;
-		GetParent().CallDeferred( Node.MethodName.AddChild, engineHost );
+		GetParent().AddChild( engineHost );
 		
 		// Delete self, no longer needed
 		QueueFree();
+		mInitialised = true;
 	}
 
 	private static bool CheckMethod<T>( Type type, ref T method, string name ) where T : Delegate
@@ -101,4 +107,5 @@ public partial class EngineLoader : Node3D
 
 	ElegyLauncherLoadContext mLoadContext = new();
 	Assembly mEngineAssembly = null;
+	bool mInitialised = false;
 }
