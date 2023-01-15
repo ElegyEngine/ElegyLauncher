@@ -16,6 +16,9 @@ public partial class EngineLoader : Node3D
 			return;
 		}
 
+		GD.Print( "[EngineLoader] Init" );
+		GD.Print( "[EngineLoader] Loading 'Elegy.Engine.dll'..." );
+
 		try
 		{
 			mEngineAssembly = mLoadContext
@@ -24,13 +27,13 @@ public partial class EngineLoader : Node3D
 		catch ( FileNotFoundException ex )
 		{
 			// Todo: we could maybe have a messagebox popping up here
-			GD.PrintErr( "Cannot find Elegy.Engine.dll" );
-			GD.PrintErr( "Error message:" );
+			GD.PrintErr( "[EngineLoader] Cannot find Elegy.Engine.dll" );
+			GD.PrintErr( "[OS] Message:" );
 			GD.PrintErr( ex.Message );
 		}
 		catch ( Exception ex )
 		{
-			GD.PrintErr( $"Unknown error: {ex.Message}" );
+			GD.PrintErr( $"[OS] Unknown error: {ex.Message}" );
 		}
 
 		if ( mEngineAssembly == null )
@@ -62,18 +65,27 @@ public partial class EngineLoader : Node3D
 			return;
 		}
 
-		if ( !engine.Init( GetParent() as Node3D ) )
+		try
 		{
-			Exit( "Engine failed to initialise" );
+			engine.Init( GetParent() as Node3D );
+		}
+		catch ( Exception ex )
+		{
+			GD.PrintErr( "[EngineLoader] Engine failed to initialise" );
+			GD.Print( "[OS] Message:" );
+			GD.Print( $"{ex.Message}" );
+			Exit( "Engine failed to initialise", 3 );
 			return;
 		}
+		finally
+		{
+			// Kick off the engine host with the loaded interface
+			EngineHost engineHost = new( engine );
+			engineHost.Name = "EngineHost";
+			engineHost.TopLevel = true;
+			GetParent().AddChild( engineHost );
+		}
 
-		// Kick off the engine host with the loaded interface
-		EngineHost engineHost = new( engine );
-		engineHost.Name = "EngineHost";
-		engineHost.TopLevel = true;
-		GetParent().AddChild( engineHost );
-		
 		// Delete self, no longer needed
 		QueueFree();
 		mInitialised = true;
