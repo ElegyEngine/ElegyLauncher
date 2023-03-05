@@ -14,8 +14,8 @@ config/name="Elegy.Launcher"
 config/description="Launcher for Elegy Engine."
 run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.0", "C#", "Forward Plus")
-boot_splash/show_image=false
 boot_splash/bg_color=Color(0.0352941, 0.0352941, 0.0352941, 1)
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [display]
