@@ -1,4 +1,4 @@
-﻿// SPDX-FileCopyrightText: 2022 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
 using Elegy.Launcher;
@@ -28,4 +28,3 @@ public partial class EngineHost : Node3D
 		mInterface.HandleInput( @event );
 	}
 }
-

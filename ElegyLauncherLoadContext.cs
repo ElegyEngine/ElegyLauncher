@@ -1,7 +1,6 @@
-﻿// SPDX-FileCopyrightText: 2022 Admer Šuko
+﻿// SPDX-FileCopyrightText: 2022-2023 Admer Šuko
 // SPDX-License-Identifier: MIT
 
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -43,7 +42,6 @@ namespace Elegy.Launcher
 				return Assembly.LoadFrom( assemblyPath );
 			}
 
-			// Use data_Elegy.Launcher_x86_x64 folder
 			return null;
 		}
 
