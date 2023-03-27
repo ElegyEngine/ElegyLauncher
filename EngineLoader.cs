@@ -9,6 +9,34 @@ using System.Reflection;
 
 public partial class EngineLoader : Node3D
 {
+	private Assembly? TryLoadAssembly( string path )
+	{
+		Assembly assembly;
+
+		GD.Print( $"[EngineLoader] Loading '{path}'..." );
+
+		try
+		{
+			assembly = mLoadContext
+				.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/{path}" );
+		}
+		catch ( FileNotFoundException ex )
+		{
+			// Todo: we could maybe have a messagebox popping up here
+			GD.PrintErr( $"[EngineLoader] Cannot find {path}" );
+			GD.PrintErr( "[OS] Message:" );
+			GD.PrintErr( ex.Message );
+			return null;
+		}
+		catch ( Exception ex )
+		{
+			GD.PrintErr( $"[OS] Unknown error: {ex.Message}" );
+			return null;
+		}
+
+		return assembly;
+	}
+
 	public override void _Process( double delta )
 	{
 		if ( mInitialised )
@@ -17,25 +45,17 @@ public partial class EngineLoader : Node3D
 		}
 
 		GD.Print( "[EngineLoader] Init" );
-		GD.Print( "[EngineLoader] Loading 'Elegy.Engine.dll'..." );
-
-		try
+		
+		// Elegy.Common needs to get loaded so Elegy.Engine's plugins can refer to it
+		// and not have any assembly resolution conflicts
+		mLoadContext.CommonAssembly = TryLoadAssembly( "Elegy.Common.dll" );
+		if ( mLoadContext.CommonAssembly == null )
 		{
-			mEngineAssembly = mLoadContext
-				.LoadFromAssemblyPath( $"{Directory.GetCurrentDirectory()}/Elegy.Engine.dll" );
-		}
-		catch ( FileNotFoundException ex )
-		{
-			// Todo: we could maybe have a messagebox popping up here
-			GD.PrintErr( "[EngineLoader] Cannot find Elegy.Engine.dll" );
-			GD.PrintErr( "[OS] Message:" );
-			GD.PrintErr( ex.Message );
-		}
-		catch ( Exception ex )
-		{
-			GD.PrintErr( $"[OS] Unknown error: {ex.Message}" );
+			Exit( "Shutting down, I cannot work without Elegy.Common.dll..." );
+			return;
 		}
 
+		mEngineAssembly = TryLoadAssembly( "Elegy.Engine.dll" );
 		if ( mEngineAssembly == null )
 		{
 			Exit( "Shutting down, I cannot work without my engine DLL...", 1 );

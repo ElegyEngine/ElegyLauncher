@@ -25,6 +25,7 @@ namespace Elegy.Launcher
 			switch ( assemblyName.Name )
 			{
 				case "GodotSharp": return typeof( Godot.GD ).Assembly;
+				case "Elegy.Common": return CommonAssembly;
 			}
 
 			// Root directory second
@@ -44,6 +45,8 @@ namespace Elegy.Launcher
 
 			return null;
 		}
+
+		public Assembly CommonAssembly { get; set; }
 
 		private string mDataDirectory;
 	}
